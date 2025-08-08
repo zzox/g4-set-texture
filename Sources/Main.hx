@@ -14,11 +14,11 @@ import kha.graphics4.PipelineState;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
+import kha.graphics4.TextureUnit;
 
 class Main {
-	var pipeline:PipelineState;
-	var maskId:TextureUnit;
-	var mask:Image;
+	static var pipeline:PipelineState;
+	static var maskId:TextureUnit;
 
 	static function update(): Void {
 
@@ -26,12 +26,12 @@ class Main {
 
 	static function render(framebuffer: Framebuffer): Void {
         framebuffer.g4.begin();
-        framebuffer.g4.setPipeline(pipeline);
-        framebuffer.g4.setTexture(maskId, mask);
+        framebuffer.g4.setTexture(maskId, Assets.images.cat_mask);
         framebuffer.g4.end();
 
 		framebuffer.g2.begin();
-		framebuffer.g2.drawImage(Assets.images.cat, 0, 0);
+		framebuffer.g2.pipeline = pipeline;
+		framebuffer.g2.drawImage(Assets.images.cat1, 0, 0);
 		framebuffer.g2.end();
 	}
 
@@ -52,8 +52,7 @@ class Main {
 			pipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
 			pipeline.compile();
 
-			maskId = shader.pipeline.getTextureUnit('mask');
-			mask = Assets.images.cat_mask;
+			maskId = pipeline.getTextureUnit('mask');
 
 			// Just loading everything is ok for small projects
 			Assets.loadEverything(function () {
